@@ -36,23 +36,20 @@ menu = """
 while True:
     print(menu)
     valor_menu = int(input("Ingresa opción: "))
+
     if valor_menu == 5:
         break
-    elif valor_menu == 1:
-        valor1 = int(input("Ingresa valor 1: "))
-        valor2 = int(input("Ingresa valor 2: "))
+
+    valor1 = int(input("Ingresa valor 1: "))
+    valor2 = int(input("Ingresa valor 2: "))
+
+    if valor_menu == 1:
         print(valor1+valor2)
     elif valor_menu == 2:
-        valor1 = int(input("Ingresa valor 1: "))
-        valor2 = int(input("Ingresa valor 2: "))
         print(valor1-valor2)
     elif valor_menu == 3:
-        valor1 = int(input("Ingresa valor 1: "))
-        valor2 = int(input("Ingresa valor 2: "))
         print(valor1/valor2)
     elif valor_menu == 4:
-        valor1 = int(input("Ingresa valor 1: "))
-        valor2 = int(input("Ingresa valor 2: "))
         print(valor1*valor2)
     else:
         continue
