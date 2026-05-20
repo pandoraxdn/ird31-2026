@@ -38,7 +38,6 @@ while True:
         disenador = Disenador(nombre, apellido_p, apellido_m, edad, no_empleado, salario, area)
         disenador.informacion()
         disenador.informacion_empleado()
-        disenador.informacion_empleado()
         disenador.informacion_diseñador()
         lista.append(disenador)
 
