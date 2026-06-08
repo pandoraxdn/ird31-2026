@@ -1,0 +1,9 @@
+/home/najimi/public_html/ird31/02062026/pyside/.devenv/.devenv/bootstrap/bootstrapLib.nix
+/home/najimi/public_html/ird31/02062026/pyside/.devenv/.devenv/bootstrap/default.nix
+/home/najimi/public_html/ird31/02062026/pyside/.devenv/.devenv/bootstrap/resolve-lock.nix
+/home/najimi/public_html/ird31/02062026/pyside/.devenv/devenv.local.nix
+/home/najimi/public_html/ird31/02062026/pyside/.devenv/devenv.lock
+/home/najimi/public_html/ird31/02062026/pyside/.devenv/devenv.nix
+/home/najimi/.config/nixpkgs/overlays
+/home/najimi/.config/nixpkgs/overlays.nix
+/home/najimi/public_html/ird31/02062026/pyside/.devenv/.env

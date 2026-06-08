@@ -1,33 +1,8 @@
-# devenv zsh init - restore ZDOTDIR and source user's .zshrc
+# Disable history during init so devenv internal commands don't pollute history.
+set +o history
 
-if [ -n "$_DEVENV_REAL_ZDOTDIR" ]; then
-    ZDOTDIR="$_DEVENV_REAL_ZDOTDIR"
-    unset _DEVENV_REAL_ZDOTDIR
-    [ -f "$ZDOTDIR/.zshenv" ] && source "$ZDOTDIR/.zshenv"
-    [ -f "$ZDOTDIR/.zshrc" ] && source "$ZDOTDIR/.zshrc"
-else
-    unset ZDOTDIR
-    [ -f "$HOME/.zshenv" ] && source "$HOME/.zshenv"
-    [ -f "$HOME/.zshrc" ] && source "$HOME/.zshrc"
-fi
+# Environment diff helpers (always defined for tracking)
 
-# Restore devenv PATH after user's .zshrc may have modified it
-export PATH="$_DEVENV_PATH"
-
-# Set devenv prompt prefix
-PROMPT="(devenv) ${PROMPT}"
-
-# Hot-reload hook
-
-autoload -Uz add-zsh-hook
-
-__devenv_reload_apply() {
-    # Source new environment if a reload is pending
-    if [ -f "/tmp/devenv-reload-3554.sh" ]; then
-        # Shell out to bash to handle the env diff (bash syntax)
-        local reload_output
-        reload_output=$(bash -c '
-            
 # Environment diff helpers (inspired by direnv)
 # Diff is stored in _DEVENV_DIFF env var (not a file) so each shell has its own state
 # Uses gzip+base64 encoding for compact storage
@@ -150,51 +125,39 @@ __devenv_apply_reverse_diff() {
 }
 
 
-# Reverse previous diff
-__devenv_apply_reverse_diff
+# Capture environment BEFORE sourcing devenv (for diff tracking)
+_devenv_before_file=$(mktemp)
+__devenv_capture_env > "$_devenv_before_file"
 
-# Capture env before sourcing new devenv
-_before=$(mktemp)
-__devenv_capture_env > "$_before"
+# Source the devenv environment
+source "/home/najimi/public_html/ird31/02062026/pyside/.devenv/.devenv/shell-env.sh"
 
-# Source new devenv environment
-source "/tmp/devenv-reload-3554.sh"
-rm -f "/tmp/devenv-reload-3554.sh"
+# Compute and store the initial diff in _DEVENV_DIFF env var
+__devenv_compute_diff "$_devenv_before_file"
+rm -f "$_devenv_before_file"
+unset _devenv_before_file
 
-# Compute new diff
-__devenv_compute_diff "$_before"
-rm -f "$_before"
+# Save PATH before zsh init potentially modifies it
+export _DEVENV_PATH="$PATH"
 
-# Output current environment for the calling shell to parse
-export -p
-        ' 2>/dev/null)
+# Save original ZDOTDIR so zsh init can restore it
+if [ -n "$ZDOTDIR" ]; then
+    export _DEVENV_REAL_ZDOTDIR="$ZDOTDIR"
+fi
 
-        # Apply the environment changes
-        if [ -n "$reload_output" ]; then
-            eval "$reload_output"
-        fi
+# Point ZDOTDIR to our init directory containing our .zshrc
+export ZDOTDIR="/home/najimi/public_html/ird31/02062026/pyside/.devenv/.devenv/zsh"
 
-        # Update saved PATH
-        _DEVENV_PATH="$PATH"
-    fi
-}
+# Re-enable history before exec
+set -o history
 
-__devenv_restore_path() {
-    # Restore devenv PATH (in case direnv or other tools modified it)
-    export PATH="$_DEVENV_PATH"
-}
-
-__devenv_precmd_hook() {
-    __devenv_reload_apply
-    __devenv_restore_path
-}
-add-zsh-hook precmd __devenv_precmd_hook
-
-# Keybinding for manual reload
-__devenv_reload_widget() {
-    __devenv_reload_apply
-    zle reset-prompt
-}
-zle -N __devenv_reload_widget
-bindkey "${DEVENV_RELOAD_KEYBIND:-\\e\\C-r}" __devenv_reload_widget
-
+# Exec into zsh (resolve via PATH if not absolute, since the devenv
+# environment may have added it after this process started)
+if [ ! -x "/run/current-system/sw/bin/zsh" ] && ! command -v "/run/current-system/sw/bin/zsh" >/dev/null 2>&1; then
+    echo "devenv: error: shell '/run/current-system/sw/bin/zsh' not found" >&2
+    echo "devenv: add zsh to your devenv.nix packages or set SHELL to an absolute path" >&2
+    exit 1
+fi
+exec "/run/current-system/sw/bin/zsh" -i
+echo "devenv: error: failed to exec into /run/current-system/sw/bin/zsh" >&2
+exit 1
