@@ -1,1 +1,4 @@
-.devenv/*
+# Entornos virtuales
+venv/*
+venv/pyside/*
+venv/tkinter/*
