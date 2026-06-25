@@ -33,7 +33,10 @@ class LoginWindow(Ventana):
         contenedor_tarjeta.setSpacing(20)
         
         logo = Texto("🖥️")
+        logo.setObjectName("logo")
         subtitulo = Texto("Ingrese Credenciales")
+        subtitulo.setObjectName("subtitulo")
+
         correo = Entrada()
         correo.setPlaceholderText("Correo Electronico")
         password = Entrada()

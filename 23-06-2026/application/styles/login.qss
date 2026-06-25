@@ -1,3 +1,29 @@
 QWidget{
-  background: #0F172A;
+  background: #FFFFFF;
 }
+
+#tarjeta{
+  background: #1E293B;
+  border-radius: 25px;
+}
+
+#logo{
+  font-size: 80px;
+}
+
+#subtitulo{
+  font-size: 34px;
+  color:black;
+}
+
+QLineEdit{
+  background:#334155;
+  border:2px solid #475569;
+  border-radius:12px;
+  padding:14px;
+  font-size:20px;
+  color:white;
+}
+
+
+
