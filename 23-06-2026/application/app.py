@@ -1,10 +1,11 @@
 import sys
 from PySide6.QtWidgets import QApplication as App
-from LoginWindow import LoginWindow
+#from windows.LoginWindow import LoginWindow
+from windows.FormWindow import FormWindow
 
 def main():
     app = App()
-    ventana = LoginWindow()
+    ventana = FormWindow()
     ventana.show()
     sys.exit(app.exec())
 
